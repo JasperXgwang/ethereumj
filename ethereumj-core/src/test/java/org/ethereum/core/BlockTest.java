@@ -24,7 +24,8 @@ import org.ethereum.trie.Trie;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.*;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,24 +55,23 @@ public class BlockTest {
 
     static String TEST_GENESIS =
             "{" +
-            "'0000000000000000000000000000000000000001': { 'wei': '1' }" +
-            "'0000000000000000000000000000000000000002': { 'wei': '1' }" +
-            "'0000000000000000000000000000000000000003': { 'wei': '1' }" +
-            "'0000000000000000000000000000000000000004': { 'wei': '1' }" +
-            "'dbdbdb2cbd23b783741e8d7fcf51e459b497e4a6': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'e6716f9544a56c530d868e4bfbacb172315bdead': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'b9c015918bdaba24b4ff057a92a3873d6eb201be': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'1a26338f0d905e295fccb71fa9ea849ffa12aaf4': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'2ef47100e0787b915105fd5e3f4ff6752079d5cb': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'cd2a3d9f938e13cd947ec05abc7fe734df8dd826': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'6c386a4b26f73c802f34673f7248bb118f97424a': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "'e4157b34ea9615cfbde6b4fda419828124b70c78': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
-            "}";
+                    "'0000000000000000000000000000000000000001': { 'wei': '1' }" +
+                    "'0000000000000000000000000000000000000002': { 'wei': '1' }" +
+                    "'0000000000000000000000000000000000000003': { 'wei': '1' }" +
+                    "'0000000000000000000000000000000000000004': { 'wei': '1' }" +
+                    "'dbdbdb2cbd23b783741e8d7fcf51e459b497e4a6': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'e6716f9544a56c530d868e4bfbacb172315bdead': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'b9c015918bdaba24b4ff057a92a3873d6eb201be': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'1a26338f0d905e295fccb71fa9ea849ffa12aaf4': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'2ef47100e0787b915105fd5e3f4ff6752079d5cb': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'cd2a3d9f938e13cd947ec05abc7fe734df8dd826': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'6c386a4b26f73c802f34673f7248bb118f97424a': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "'e4157b34ea9615cfbde6b4fda419828124b70c78': { 'wei': '1606938044258990275541962092341162602522202993782792835301376' }" +
+                    "}";
 
     static {
         TEST_GENESIS = TEST_GENESIS.replace("'", "\"");
     }
-
 
 
     @Test
@@ -80,7 +80,7 @@ public class BlockTest {
         byte[] genesisBytes = Hex.decode(GENESIS_RLP);
         Block genesisFromRLP = new Block(genesisBytes);
         Block genesis = GenesisLoader.loadGenesis(getClass().getResourceAsStream("/genesis/olympic.json"));
-        assertEquals(Hex.toHexString(genesis.getHash()),   Hex.toHexString(genesisFromRLP.getHash()));
+        assertEquals(Hex.toHexString(genesis.getHash()), Hex.toHexString(genesisFromRLP.getHash()));
         assertEquals(Hex.toHexString(genesis.getParentHash()), Hex.toHexString(genesisFromRLP.getParentHash()));
         assertEquals(Hex.toHexString(genesis.getStateRoot()), Hex.toHexString(genesisFromRLP.getStateRoot()));
     }
@@ -175,7 +175,7 @@ public class BlockTest {
 
 
     @Test
-    public void testFrontierGenesis(){
+    public void testFrontierGenesis() {
         SystemProperties config = new SystemProperties();
         config.setGenesisInfo("frontier.json");
 
@@ -189,7 +189,7 @@ public class BlockTest {
     }
 
     @Test
-    public void testZeroPrecedingDifficultyGenesis(){
+    public void testZeroPrecedingDifficultyGenesis() {
         SystemProperties config = new SystemProperties();
         config.setGenesisInfo("genesis-low-difficulty.json");
 
@@ -210,5 +210,62 @@ public class BlockTest {
         System.out.println("Size of parsed block: " + Block.MemEstimator.estimateSize(b));
         b.getTransactionsList().forEach(Transaction::getSender);
         System.out.println("Size of parsed block with parsed txes: " + Block.MemEstimator.estimateSize(b));
+    }
+
+    @Test
+    public void test() {
+
+        byte[] parentHash = new byte[0];
+        byte[] uncleHash = new byte[0];
+        byte[] minerCoinbase = Hex.decode("fffefd");   // {-1, -2, -3}
+        long blockNumber = 0;
+        byte[] GasLimit = new byte[0];
+        byte[] extraData = new byte[0];
+        byte[] calcTxTrie = new byte[0];
+
+        Block block = new Block(
+                parentHash,
+                uncleHash,       // uncleHash
+                minerCoinbase,
+                new byte[0],     // log bloom - from tx receipts
+                new byte[0],     // difficulty computed right after block creation
+                blockNumber,
+                GasLimit,        // (add to config ?)
+                0,      // gas used - computed after running all transactions
+                0,     // block time
+                extraData,      // extra data
+                new byte[0],    // mixHash (to mine)
+                new byte[0],    // nonce   (to mine)
+                new byte[0],    // receiptsRoot - computed after running all transactions
+                calcTxTrie,     // TransactionsRoot - computed after running all transactions
+                new byte[]{0},  // stateRoot - computed after running all transactions
+                null,
+                null);
+        block.getEncoded();
+
+        /**
+         * 加载区块
+         *
+         * 注意，我通过上面的block的`block.getEncoded()`生成的block1。
+         * 然后进行参数打印。
+         */
+        Block block1 = new Block(block.getEncoded());
+        System.out.println("ParentHash : " + block1.getParentHash());
+        System.out.println("uncleHash  : " + block1.getUnclesHash());
+        // 注意这里，把16进制转化为我们之前传的【字符串】
+        System.out.println("coinbase   : " + Hex.toHexString(block1.getHeader().getCoinbase()));
+        System.out.println("log bloom  : " + block1.getLogBloom());
+        System.out.println("difficulty : " + block1.getDifficulty());
+        System.out.println("blockNumber: " + block1.getNumber());
+        System.out.println("Gas Limit  : " + block1.getGasLimit());
+        System.out.println("Gas Used   : " + block1.getGasUsed());
+        System.out.println("timestamp  : " + block1.getTimestamp());
+        System.out.println("extraData  : " + block1.getExtraData());
+        System.out.println("mixHash    : " + block1.getMixHash());
+        System.out.println("nonce      : " + block1.getNonce());
+        System.out.println("Receipts Root : " + block1.getStateRoot());
+        System.out.println("state Root : " + block1.getStateRoot());
+        System.out.println("transaction List  : " + block1.getTransactionsList());
+        System.out.println("uncle List  : " + block1.getUncleList());
     }
 }
